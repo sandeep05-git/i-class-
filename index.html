@@ -2,55 +2,104 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Seller Seva - Help for New Sellers</title>
-  <meta name="description" content="Seller Seva helps new online sellers create listings, manage stores, and grow their business easily.">
-  <link rel="stylesheet" href="style.css" />
+  <title>Seller Support Video Demo</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+    }
+
+    #character {
+      width: 200px;
+      animation: float 1.5s infinite alternate ease-in-out;
+      margin: 20px auto;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-10px); }
+    }
+
+    .speech-bubble {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      margin: 20px auto;
+      font-size: 18px;
+      max-width: 600px;
+      min-height: 80px;
+    }
+
+    #startBtn {
+      padding: 12px 25px;
+      font-size: 16px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    #startBtn:hover {
+      background: #0056b3;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <div class="logo">Seller Seva</div>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="#about">About</a>
-      <a href="#services">Services</a>
-      <a href="#contact">Contact</a>
-    </nav>
-  </header>
+  <div class="container">
+    <h1>📦 Seller Support Demo</h1>
+    <img id="character" src="https://i.imgur.com/4AiXzf8.png" alt="Seller Character" />
+    <div class="speech-bubble" id="dialogue">Click the button to start the animated demo.</div>
+    <button id="startBtn" onclick="startDemo()">▶️ Start Demo</button>
+  </div>
 
-  <section class="hero">
-    <h1>Welcome to Seller Seva</h1>
-    <p>Helping new sellers succeed online – from setup to sales!</p>
-  </section>
+  <script>
+    const scenes = [
+      "Hello seller! Welcome to our support center. We’ll help you create your first product listing.",
+      "Many sellers are confused at first – about GST, category, images, or even pricing.",
+      "Don’t worry – our step-by-step help makes things simple.",
+      "Step one: Choose the correct product category. It helps your product reach the right customers.",
+      "Step two: Upload clear, high-quality images. Good images build trust.",
+      "Step three: Add a title and description. Make sure it’s accurate and easy to understand.",
+      "Step four: Set the right price and enter your GST details if needed.",
+      "That’s it! Your product listing is ready to go live.",
+      "We’ve helped hundreds of sellers just like you. Our team is always ready to support you.",
+      "Visit our website and get started today. Happy selling!"
+    ];
 
-  <section id="about">
-    <h2>About Us</h2>
-    <p>We assist new sellers in setting up their online shops, creating listings, and understanding the basics of e-commerce platforms. Our goal is to simplify your selling journey.</p>
-  </section>
+    async function speakLine(line) {
+      return new Promise(resolve => {
+        const utterance = new SpeechSynthesisUtterance(line);
+        utterance.lang = "en-US";
+        utterance.pitch = 1;
+        utterance.rate = 1;
+        utterance.onend = resolve;
+        speechSynthesis.speak(utterance);
+      });
+    }
 
-  <section id="services">
-    <h2>Our Services</h2>
-    <ul>
-      <li>✅ Listing creation help</li>
-      <li>✅ Store setup on Amazon, Flipkart, Meesho</li>
-      <li>✅ Catalog support</li>
-      <li>✅ Product optimization</li>
-      <li>✅ Voice/video support available</li>
-    </ul>
-  </section>
+    async function startDemo() {
+      document.getElementById("startBtn").style.display = "none";
+      const dialogue = document.getElementById("dialogue");
 
-  <section id="contact">
-    <h2>Contact Us</h2>
-    <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
-      <input type="text" name="name" placeholder="Your Name" required />
-      <input type="email" name="email" placeholder="Your Email" required />
-      <textarea name="message" placeholder="How can we help you?" required></textarea>
-      <button type="submit">Send Message</button>
-    </form>
-  </section>
+      for (const line of scenes) {
+        dialogue.textContent = line;
+        await speakLine(line);
+        await new Promise(res => setTimeout(res, 400)); // Short pause between lines
+      }
 
-  <footer>
-    <p>&copy; 2025 Seller Seva. All rights reserved.</p>
-  </footer>
+      dialogue.textContent = "✅ Demo complete. Thank you for watching!";
+    }
+  </script>
 </body>
 </html>
