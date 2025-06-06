@@ -2,103 +2,114 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Seller Support Video Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Seller Support Animation – EcoQuickSupp</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f2f2f2;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
       margin: 0;
       padding: 20px;
       text-align: center;
     }
-
-    .container {
-      max-width: 700px;
-      margin: auto;
+    #scene {
+      background: url('https://i.ibb.co/1mF9yQg/helpdesk-background.jpg') no-repeat center;
+      background-size: cover;
+      width: 100%;
+      max-width: 720px;
+      height: 400px;
+      margin: 0 auto 20px;
+      position: relative;
+      border: 2px solid #ccc;
+      border-radius: 12px;
     }
-
-    #character {
-      width: 200px;
-      animation: float 1.5s infinite alternate ease-in-out;
-      margin: 20px auto;
+    .character {
+      position: absolute;
+      bottom: 0;
+      width: 140px;
     }
-
-    @keyframes float {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-10px); }
+    #seller {
+      left: 20px;
     }
-
-    .speech-bubble {
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      margin: 20px auto;
+    #support {
+      right: 20px;
+    }
+    #dialogue {
       font-size: 18px;
-      max-width: 600px;
-      min-height: 80px;
+      margin: 20px auto;
+      max-width: 700px;
+      padding: 10px;
+      background: #fff;
+      border-radius: 10px;
+      border: 1px solid #ccc;
     }
-
-    #startBtn {
-      padding: 12px 25px;
-      font-size: 16px;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-
-    #startBtn:hover {
-      background: #0056b3;
+    select, button {
+      padding: 8px 12px;
+      margin: 5px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>📦 Seller Support Demo</h1>
-    <img id="character" src="https://i.imgur.com/4AiXzf8.png" alt="Seller Character" />
-    <div class="speech-bubble" id="dialogue">Click the button to start the animated demo.</div>
-    <button id="startBtn" onclick="startDemo()">▶️ Start Demo</button>
+  <h1>EcoQuickSupp Seller Support</h1>
+  <div id="scene">
+    <img id="seller" class="character" src="https://i.ibb.co/4K2rCzG/seller-character.png" alt="Seller" />
+    <img id="support" class="character" src="https://i.ibb.co/W3P0nC9/support-character.png" alt="Support" />
+  </div>
+  <div id="dialogue">Select language and click start to play seller support conversation.</div>
+
+  <div>
+    <select id="language">
+      <option value="en-male">English - Male</option>
+      <option value="en-female">English - Female</option>
+      <option value="hi-male">Hindi - Male</option>
+      <option value="hi-female">Hindi - Female</option>
+    </select>
+    <button onclick="playScene()">Start</button>
   </div>
 
   <script>
-    const scenes = [
-      "Hello seller! Welcome to our support center. We’ll help you create your first product listing.",
-      "Many sellers are confused at first – about GST, category, images, or even pricing.",
-      "Don’t worry – our step-by-step help makes things simple.",
-      "Step one: Choose the correct product category. It helps your product reach the right customers.",
-      "Step two: Upload clear, high-quality images. Good images build trust.",
-      "Step three: Add a title and description. Make sure it’s accurate and easy to understand.",
-      "Step four: Set the right price and enter your GST details if needed.",
-      "That’s it! Your product listing is ready to go live.",
-      "We’ve helped hundreds of sellers just like you. Our team is always ready to support you.",
-      "Visit our website and get started today. Happy selling!"
-    ];
+    const dialogueBox = document.getElementById('dialogue');
 
-    async function speakLine(line) {
-      return new Promise(resolve => {
-        const utterance = new SpeechSynthesisUtterance(line);
-        utterance.lang = "en-US";
-        utterance.pitch = 1;
-        utterance.rate = 1;
-        utterance.onend = resolve;
-        speechSynthesis.speak(utterance);
-      });
-    }
+    const dialogues = {
+      'en-male': [
+        "Seller: I'm getting fake buyer issues again!",
+        "Support: We're sorry to hear that. Please report it in the Seller Central Help section.",
+        "Support: Visit the EcoQuickSupp Help Desk anytime for guidance."
+      ],
+      'en-female': [
+        "Seller: I'm getting fake buyer issues again!",
+        "Support: We're sorry to hear that. Please report it in the Seller Central Help section.",
+        "Support: Visit the EcoQuickSupp Help Desk anytime for guidance."
+      ],
+      'hi-male': [
+        "Seller: फिर से नकली खरीदारों की समस्या हो रही है!",
+        "Support: हमें खेद है। कृपया इसे सेलर सेंट्रल हेल्प सेक्शन में रिपोर्ट करें।",
+        "Support: EcoQuickSupp सहायता केंद्र पर कभी भी मदद लें।"
+      ],
+      'hi-female': [
+        "Seller: फिर से नकली खरीदारों की समस्या हो रही है!",
+        "Support: हमें खेद है। कृपया इसे सेलर सेंट्रल हेल्प सेक्शन में रिपोर्ट करें।",
+        "Support: EcoQuickSupp सहायता केंद्र पर कभी भी मदद लें।"
+      ]
+    };
 
-    async function startDemo() {
-      document.getElementById("startBtn").style.display = "none";
-      const dialogue = document.getElementById("dialogue");
+    function playScene() {
+      const selected = document.getElementById('language').value;
+      const lines = dialogues[selected];
+      let index = 0;
 
-      for (const line of scenes) {
-        dialogue.textContent = line;
-        await speakLine(line);
-        await new Promise(res => setTimeout(res, 400)); // Short pause between lines
+      function speakLine() {
+        if (index >= lines.length) return;
+        dialogueBox.textContent = lines[index];
+        const utter = new SpeechSynthesisUtterance(lines[index]);
+        if(selected.startsWith('en')) utter.lang = selected.includes('male') ? 'en-US' : 'en-GB';
+        else utter.lang = 'hi-IN';
+        speechSynthesis.speak(utter);
+        index++;
+        utter.onend = () => setTimeout(speakLine, 1500);
       }
 
-      dialogue.textContent = "✅ Demo complete. Thank you for watching!";
+      speakLine();
     }
   </script>
 </body>
