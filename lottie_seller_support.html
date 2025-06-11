@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Seller Support Lottie Animation</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.5/lottie.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      background: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: sans-serif;
+    }
+    #animationContainer {
+      width: 300px;
+      height: 300px;
+    }
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="animationContainer"></div>
+  <div>
+    <button onclick="playSpeech('seller')">Seller Talk</button>
+    <button onclick="playSpeech('support')">Support Talk</button>
+  </div>
+
+  <script>
+    let anim = lottie.loadAnimation({
+      container: document.getElementById('animationContainer'),
+      renderer: 'svg',
+      loop: false,
+      autoplay: false,
+      path: 'https://assets10.lottiefiles.com/packages/lf20_5u6p1jfr.json' // talking face animation
+    });
+
+    function playSpeech(character) {
+      let text = '';
+      if (character === 'seller') {
+        text = 'Bhaiya mujhe fake buyers se bahut dikkat ho rahi hai!';
+      } else {
+        text = 'Maaf kijiye sir, aap Seller Central ke Help Section mein report kar sakte hain.';
+      }
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'hi-IN';
+      utterance.rate = 1;
+      utterance.pitch = character === 'seller' ? 1.3 : 1;
+
+      utterance.onstart = () => {
+        anim.goToAndPlay(0, true);
+      };
+
+      speechSynthesis.speak(utterance);
+    }
+  </script>
+
+</body>
+</html>
