@@ -6,38 +6,41 @@
   <style>
     body {
       margin: 0;
-      background: #f0f0f0;
-      font-family: sans-serif;
       overflow: hidden;
+      font-family: sans-serif;
     }
+
     #scene {
       width: 100vw;
       height: 100vh;
-      background: url('https://i.imgur.com/Uh2A6a1.jpg') center/cover no-repeat;
+      background: url('https://raw.githubusercontent.com/sandeep05-git/seller-support/main/images/pexels-cottonbro-7223556.jpg') center/cover no-repeat;
       position: relative;
     }
+
     .character {
       position: absolute;
       bottom: 0;
-      width: 180px;
-      transition: transform 0.3s;
+      width: 200px;
     }
+
     #seller {
-      left: 50px;
+      left: 30px;
     }
+
     #support {
-      right: 50px;
+      right: 30px;
     }
+
     .mouth {
       position: absolute;
-      bottom: 60px;
-      left: 60px;
+      bottom: 100px;
+      left: 80px;
       width: 30px;
-      height: 10px;
+      height: 20px;
       background: red;
       border-radius: 50%;
-      animation: talk 0.3s infinite alternate;
       display: none;
+      animation: talk 0.25s infinite alternate;
     }
 
     @keyframes talk {
@@ -45,29 +48,48 @@
       to { height: 25px; }
     }
 
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+
+    .shake {
+      animation: shake 0.5s ease-in-out;
+    }
+
     #controls {
       position: absolute;
       bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: white;
+      background: #ffffffdd;
       padding: 10px;
       border-radius: 10px;
+    }
+
+    button {
+      padding: 8px 14px;
+      margin: 5px;
+      font-size: 14px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
 <div id="scene">
-  <img id="seller" class="character" src="https://raw.githubusercontent.com/sandeep05-git/seller-support/main/images/pexels-cottonbro-7223556.jpg" />
+  <img id="seller" class="character" src="https://i.imgur.com/5QFQbM3.png">
   <div class="mouth" id="sellerMouth"></div>
 
-  <img id="support" class="character" src="https://raw.githubusercontent.com/sandeep05-git/seller-support/main/images/pexels-cottonbro-7223556.jpg" />
+  <img id="support" class="character" src="https://i.imgur.com/YZzt3If.png">
   <div class="mouth" id="supportMouth"></div>
 
   <div id="controls">
-    <button onclick="speakLine('seller', 'Bhaiya mujhe fake buyers se dikkat ho rahi hai!')">Seller Talk</button>
-    <button onclick="speakLine('support', 'Maaf kijiye prabhas aap help section se report kar sakte hain. prabhas ji')">Support Talk</button>
+    <button onclick="speakLine('seller', 'Bhaiya mujhe fake buyers se bahut dikkat ho rahi hai!')">Seller Talk</button>
+    <button onclick="speakLine('support', 'Maaf kijiye sir, aap Seller Central ke Help Section mein report kar sakte hain.')">Support Talk</button>
   </div>
 </div>
 
@@ -75,16 +97,27 @@
 function speakLine(character, text) {
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = text.includes("Bhaiya") ? 'hi-IN' : 'en-US';
-  utterance.rate = 1;
-  utterance.pitch = character === 'seller' ? 1.5 : 1;
 
   const mouth = document.getElementById(character + 'Mouth');
+  const charElem = document.getElementById(character);
+
+  // Position mouth relative to character
   mouth.style.display = 'block';
+  if (character === 'seller') {
+    mouth.style.left = (charElem.offsetLeft + 80) + 'px';
+  } else {
+    mouth.style.left = (charElem.offsetLeft + 80) + 'px';
+  }
+
+  // Add shake animation to character
+  charElem.classList.add('shake');
 
   utterance.onend = () => {
     mouth.style.display = 'none';
+    charElem.classList.remove('shake');
   };
 
+  speechSynthesis.cancel(); // Cancel any previous
   speechSynthesis.speak(utterance);
 }
 </script>
