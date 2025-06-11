@@ -1,126 +1,70 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Seller Support Animation</title>
+  <meta charset="UTF-8" />
+  <title>Seller Support Lottie Animation</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.5/lottie.min.js"></script>
   <style>
     body {
       margin: 0;
-      overflow: hidden;
+      background: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
       font-family: sans-serif;
     }
-
-    #scene {
-      width: 100vw;
-      height: 100vh;
-      background: url('https://raw.githubusercontent.com/sandeep05-git/seller-support/main/images/pexels-cottonbro-7223556.jpg') center/cover no-repeat;
-      position: relative;
+    #animationContainer {
+      width: 300px;
+      height: 300px;
     }
-
-    .character {
-      position: absolute;
-      bottom: 0;
-      width: 200px;
-    }
-
-    #seller {
-      left: 30px;
-    }
-
-    #support {
-      right: 30px;
-    }
-
-    .mouth {
-      position: absolute;
-      bottom: 100px;
-      left: 80px;
-      width: 30px;
-      height: 20px;
-      background: red;
-      border-radius: 50%;
-      display: none;
-      animation: talk 0.25s infinite alternate;
-    }
-
-    @keyframes talk {
-      from { height: 10px; }
-      to { height: 25px; }
-    }
-
-    @keyframes shake {
-      0% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      50% { transform: translateX(5px); }
-      75% { transform: translateX(-5px); }
-      100% { transform: translateX(0); }
-    }
-
-    .shake {
-      animation: shake 0.5s ease-in-out;
-    }
-
-    #controls {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #ffffffdd;
-      padding: 10px;
-      border-radius: 10px;
-    }
-
     button {
-      padding: 8px 14px;
-      margin: 5px;
-      font-size: 14px;
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
       cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-<div id="scene">
-  <img id="seller" class="character" src="https://i.imgur.com/5QFQbM3.png">
-  <div class="mouth" id="sellerMouth"></div>
-
-  <img id="support" class="character" src="https://i.imgur.com/YZzt3If.png">
-  <div class="mouth" id="supportMouth"></div>
-
-  <div id="controls">
-    <button onclick="speakLine('seller', 'Bhaiya mujhe fake buyers se bahut dikkat ho rahi hai!')">Seller Talk</button>
-    <button onclick="speakLine('support', 'Maaf kijiye sir, aap Seller Central ke Help Section mein report kar sakte hain.')">Support Talk</button>
+  <div id="animationContainer"></div>
+  <div>
+    <button onclick="playSpeech('seller')">Seller Talk</button>
+    <button onclick="playSpeech('support')">Support Talk</button>
   </div>
-</div>
 
-<script>
-function speakLine(character, text) {
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = text.includes("Bhaiya") ? 'hi-IN' : 'en-US';
+  <script>
+    let anim = lottie.loadAnimation({
+      container: document.getElementById('animationContainer'),
+      renderer: 'svg',
+      loop: false,
+      autoplay: false,
+      path: 'https://assets10.lottiefiles.com/packages/lf20_5u6p1jfr.json' // talking face animation
+    });
 
-  const mouth = document.getElementById(character + 'Mouth');
-  const charElem = document.getElementById(character);
+    function playSpeech(character) {
+      let text = '';
+      if (character === 'seller') {
+        text = 'Bhaiya mujhe fake buyers se bahut dikkat ho rahi hai!';
+      } else {
+        text = 'Maaf kijiye sir, aap Seller Central ke Help Section mein report kar sakte hain.';
+      }
 
-  // Position mouth relative to character
-  mouth.style.display = 'block';
-  if (character === 'seller') {
-    mouth.style.left = (charElem.offsetLeft + 80) + 'px';
-  } else {
-    mouth.style.left = (charElem.offsetLeft + 80) + 'px';
-  }
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'hi-IN';
+      utterance.rate = 1;
+      utterance.pitch = character === 'seller' ? 1.3 : 1;
 
-  // Add shake animation to character
-  charElem.classList.add('shake');
+      utterance.onstart = () => {
+        anim.goToAndPlay(0, true);
+      };
 
-  utterance.onend = () => {
-    mouth.style.display = 'none';
-    charElem.classList.remove('shake');
-  };
-
-  speechSynthesis.cancel(); // Cancel any previous
-  speechSynthesis.speak(utterance);
-}
-</script>
+      speechSynthesis.speak(utterance);
+    }
+  </script>
 
 </body>
 </html>
