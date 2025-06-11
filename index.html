@@ -1,158 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Seller Support Animated Demo</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #e8f0fe;
-    margin: 0; padding: 20px;
-    text-align: center;
-  }
-  #scene {
-    position: relative;
-    width: 720px;
-    max-width: 100%;
-    height: 400px;
-    margin: 20px auto;
-    background: url('https://i.ibb.co/Hqk2PzF/helpdesk-room.jpg') no-repeat center/cover;
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-  }
-  .character {
-    position: absolute;
-    bottom: 0;
-    width: 150px;
-    transition: transform 0.3s ease;
-  }
-  #seller {
-    left: 30px;
-  }
-  #support {
-    right: 30px;
-  }
-  .talking {
-    animation: talkMove 0.5s infinite alternate;
-  }
-  @keyframes talkMove {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(-10px); }
-  }
-  #dialogue {
-    max-width: 700px;
-    margin: 20px auto;
-    background: #fff;
-    padding: 15px 20px;
-    border-radius: 10px;
-    font-size: 18px;
-    min-height: 70px;
-  }
-  select, button {
-    padding: 10px 15px;
-    margin: 10px 5px;
-    font-size: 16px;
-  }
-</style>
+  <meta charset="UTF-8">
+  <title>Seller Support Animation</title>
+  <style>
+    body {
+      margin: 0;
+      background: #f0f0f0;
+      font-family: sans-serif;
+      overflow: hidden;
+    }
+    #scene {
+      width: 100vw;
+      height: 100vh;
+      background: url('https://i.imgur.com/Uh2A6a1.jpg') center/cover no-repeat;
+      position: relative;
+    }
+    .character {
+      position: absolute;
+      bottom: 0;
+      width: 180px;
+      transition: transform 0.3s;
+    }
+    #seller {
+      left: 50px;
+    }
+    #support {
+      right: 50px;
+    }
+    .mouth {
+      position: absolute;
+      bottom: 60px;
+      left: 60px;
+      width: 30px;
+      height: 10px;
+      background: red;
+      border-radius: 50%;
+      animation: talk 0.3s infinite alternate;
+      display: none;
+    }
+
+    @keyframes talk {
+      from { height: 10px; }
+      to { height: 25px; }
+    }
+
+    #controls {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 10px;
+      border-radius: 10px;
+    }
+  </style>
 </head>
 <body>
 
-<h1>EcoQuickSupp Seller Support Demo</h1>
-
 <div id="scene">
-  <img id="seller" class="character" src="https://i.ibb.co/4K2rCzG/seller-character.png" alt="Seller" />
-  <img id="support" class="character" src="https://i.ibb.co/W3P0nC9/support-character.png" alt="Support" />
+  <img id="seller" class="character" src="https://i.imgur.com/5QFQbM3.png" />
+  <div class="mouth" id="sellerMouth"></div>
+
+  <img id="support" class="character" src="https://i.imgur.com/YZzt3If.png" />
+  <div class="mouth" id="supportMouth"></div>
+
+  <div id="controls">
+    <button onclick="speakLine('seller', 'Bhaiya mujhe fake buyers se dikkat ho rahi hai!')">Seller Talk</button>
+    <button onclick="speakLine('support', 'Maaf kijiye sir, aap help section se report kar sakte hain.')">Support Talk</button>
+  </div>
 </div>
 
-<div id="dialogue">Select language and click Start to begin the conversation.</div>
-
-<select id="language">
-  <option value="en-male">English - Male Voice</option>
-  <option value="en-female">English - Female Voice</option>
-  <option value="hi-male">Hindi - Male Voice</option>
-  <option value="hi-female">Hindi - Female Voice</option>
-</select>
-
-<button onclick="startConversation()">Start</button>
-
 <script>
-  const seller = document.getElementById('seller');
-  const support = document.getElementById('support');
-  const dialogue = document.getElementById('dialogue');
-  const langSelect = document.getElementById('language');
+function speakLine(character, text) {
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = text.includes("Bhaiya") ? 'hi-IN' : 'en-US';
+  utterance.rate = 1;
+  utterance.pitch = character === 'seller' ? 1.5 : 1;
 
-  const conversations = {
-    'en-male': [
-      { speaker: 'seller', text: "I'm frustrated with fake buyers again!" },
-      { speaker: 'support', text: "Sorry to hear that. Please report it via Seller Central Help." },
-      { speaker: 'support', text: "Visit EcoQuickSupp Help Desk anytime for support." }
-    ],
-    'en-female': [
-      { speaker: 'seller', text: "I'm frustrated with fake buyers again!" },
-      { speaker: 'support', text: "Sorry to hear that. Please report it via Seller Central Help." },
-      { speaker: 'support', text: "Visit EcoQuickSupp Help Desk anytime for support." }
-    ],
-    'hi-male': [
-      { speaker: 'seller', text: "फिर से नकली खरीदारों की समस्या हो रही है!" },
-      { speaker: 'support', text: "हमें खेद है। कृपया इसे सेलर सेंट्रल हेल्प सेक्शन में रिपोर्ट करें।" },
-      { speaker: 'support', text: "EcoQuickSupp सहायता केंद्र पर कभी भी मदद लें।" }
-    ],
-    'hi-female': [
-      { speaker: 'seller', text: "फिर से नकली खरीदारों की समस्या हो रही है!" },
-      { speaker: 'support', text: "हमें खेद है। कृपया इसे सेलर सेंट्रल हेल्प सेक्शन में रिपोर्ट करें।" },
-      { speaker: 'support', text: "EcoQuickSupp सहायता केंद्र पर कभी भी मदद लें।" }
-    ],
+  const mouth = document.getElementById(character + 'Mouth');
+  mouth.style.display = 'block';
+
+  utterance.onend = () => {
+    mouth.style.display = 'none';
   };
 
-  function speak(text, langCode, callback) {
-    if (!window.speechSynthesis) {
-      alert("Speech Synthesis not supported in your browser.");
-      callback();
-      return;
-    }
-    let utter = new SpeechSynthesisUtterance(text);
-    utter.lang = langCode;
-    utter.rate = 1;
-    utter.onend = callback;
-    window.speechSynthesis.speak(utter);
-  }
-
-  function startConversation() {
-    const lang = langSelect.value;
-    const conv = conversations[lang];
-    const langCode = lang.startsWith('en') ? 'en-US' : 'hi-IN';
-    let i = 0;
-
-    seller.classList.remove('talking');
-    support.classList.remove('talking');
-    dialogue.textContent = "";
-
-    function next() {
-      if (i >= conv.length) {
-        seller.classList.remove('talking');
-        support.classList.remove('talking');
-        dialogue.textContent = "Conversation ended.";
-        return;
-      }
-      let line = conv[i];
-      dialogue.textContent = line.text;
-
-      if (line.speaker === 'seller') {
-        seller.classList.add('talking');
-        support.classList.remove('talking');
-      } else {
-        support.classList.add('talking');
-        seller.classList.remove('talking');
-      }
-
-      speak(line.text, langCode, () => {
-        i++;
-        setTimeout(next, 700);
-      });
-    }
-    next();
-  }
+  speechSynthesis.speak(utterance);
+}
 </script>
 
 </body>
